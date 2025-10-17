@@ -1,10 +1,18 @@
 import express from 'express';
 const app = express();
 
-// Definieren der ersten Route
+
+// EJS als View-Engine
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
+// Startseite mit EJS Template
 app.get('/', (req, res) => {
-    console.log(req);
-    res.json({"hallo": "welt"});
+  res.render('index', {
+    title: 'Startseite',
+    message: 'Willkommen!',
+    user: { name: 'Max' }
+  });
 });
 
 // Weitere Route
