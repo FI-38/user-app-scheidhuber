@@ -1,7 +1,6 @@
 import express from 'express';
 const app = express();
 
-
 // EJS als View-Engine
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -17,7 +16,11 @@ app.get('/', (req, res) => {
 
 // Weitere Route
 app.get('/about', (req, res) => {
-    res.send('Dies ist die About-Seite.');
+    res.render('about', {
+        title: 'Über uns',
+        content: 'Dies ist die About-Seite.',
+        user: { name: 'Max' }
+    });
 });
 
 // Server starten
