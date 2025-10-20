@@ -23,6 +23,14 @@ app.get('/about', (req, res) => {
     });
 });
 
+// contact route
+app.get('/contact', (req, res) => {
+    res.render('contact', {
+        title: 'Kontakt',
+        user: { name: 'Max' }
+    });
+});
+
 // Server starten
 app.listen(3000, () => {
     console.log('Server läuft auf http://localhost:3000');
