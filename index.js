@@ -5,6 +5,9 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', './views');
 
+// Statische Dateien aus 'public'-Verzeichnis
+app.use(express.static('public'));
+
 // Startseite mit EJS Template
 app.get('/', (req, res) => {
   res.render('index', {
