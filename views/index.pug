@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title= title
+    link(rel="stylesheet", href="/css/style.css")
+  body
+    nav
+      ul(style="list-style: none; display: flex; gap: 1rem; padding: 0;")
+        li: a(href="/") Home
+        li: a(href="/about") About
+        li: a(href="/contact") Contact
+    hr
+
+    h1= message
+
+    if user
+      p Hallo #{user.name}
+    else
+      p Bitte einloggen
+
+    ul
+      - const items = ['Punkt 1', 'Punkt 2', 'Punkt 3']
+      each item in items
+        li= item

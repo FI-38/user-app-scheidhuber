@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 
 // EJS als View-Engine
-app.set('view engine', 'ejs');
+app.set('view engine', 'pug');
 app.set('views', './views');
 
 // Startseite mit EJS Template
@@ -25,5 +25,5 @@ app.get('/about', (req, res) => {
 
 // Server starten
 app.listen(3000, () => {
-    console.log('Server läuft auf http://fi38.mshome.net:3000');
+    console.log('Server läuft auf http://localhost:3000');
 });
