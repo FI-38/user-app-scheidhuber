@@ -1,10 +1,14 @@
 extends layouts/main
 
 block content
-  h2 Willkommen auf der Startseite
-  p= message
-
   div.alert.alert-info Hallo Welt!
+  .container
+    .row
+      .col-md-8
+        h2 Willkommen auf der Startseite
+        p= message
+      .col-md-4
+        p Inhalt am Rand.
 
 block scripts
   script.
