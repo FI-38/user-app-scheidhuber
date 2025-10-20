@@ -1,9 +1,19 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
 // EJS als View-Engine
 app.set('view engine', 'pug');
 app.set('views', './views');
+
+// Bootstrap CSS und JS bereitstellen
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
 
 // Statische Dateien aus 'public'-Verzeichnis
 app.use(express.static('public'));

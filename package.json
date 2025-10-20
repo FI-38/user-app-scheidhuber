@@ -21,6 +21,7 @@
   "author": "j23d",
   "license": "MIT",
   "dependencies": {
+    "bootstrap": "^5.3.8",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mariadb": "^3.4.5",
