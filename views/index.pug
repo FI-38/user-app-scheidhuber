@@ -1,24 +1,14 @@
-doctype html
-html
-  head
-    title= title
-    link(rel="stylesheet", href="/css/style.css")
-  body
-    nav
-      ul(style="list-style: none; display: flex; gap: 1rem; padding: 0;")
-        li: a(href="/") Home
-        li: a(href="/about") About
-        li: a(href="/contact") Contact
-    hr
+extends layouts/main
 
-    h1= message
+block content
+  h2 Willkommen auf der Startseite
+  p= message
 
-    if user
-      p Hallo #{user.name}
-    else
-      p Bitte einloggen
+  if user
+    p Hallo #{user.name}
+  else
+    a(href="/login" class="btn btn-primary") Anmelden
 
-    ul
-      - const items = ['Punkt 1', 'Punkt 2', 'Punkt 3']
-      each item in items
-        li= item
+block scripts
+  script.
+    console.log('Startseite geladen');
