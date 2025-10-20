@@ -7,6 +7,11 @@ html
   body
     include ../partials/header
 
+    if user
+        p Hallo #{user.name}
+    else
+        a(href="/login" class="btn btn-primary") Anmelden
+
     main.container
       block content
 
