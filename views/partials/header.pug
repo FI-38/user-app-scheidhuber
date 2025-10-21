@@ -1,8 +1,14 @@
 header
-    nav
-      ul(style="list-style: none; display: flex; gap: 1rem; padding: 0;")
-        li: a(href="/") Home
-        li: a(href="/about") About
-        li: a(href="/contact") Contact
-    hr
-    hr
+  nav.navbar.navbar-expand-lg.navbar-light.bg-light
+    .container-fluid
+      button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav")
+        span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
+        a.navbar-brand(href="/") User App
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(href="/") Home
+          li.nav-item
+            a.nav-link(href="/about") About
+          li.nav-item
+            a.nav-link(href="/contact") Contact
