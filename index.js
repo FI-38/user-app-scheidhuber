@@ -6,11 +6,19 @@ import pool from './config/database.js';
 
 import session from 'express-session';
 import flash from 'connect-flash';
+import cookieParser from 'cookie-parser';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Body-Parser für JSON und URL-encoded Daten
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Cookie-Parser
+app.use(cookieParser());
 
 app.use(session({
     secret: process.env.SESSION_SECRET,
@@ -38,8 +46,30 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/
 // Statische Dateien aus 'public'-Verzeichnis
 app.use(express.static('public'));
 
+
+function testMiddleware(req, res, next) {
+    console.log(`${req.method} ${req.url}`);
+    req.data = {my: 'data'};
+    next();
+}
+
+const timingMiddleware = (req, res, next) => {
+  const start = Date.now();
+
+  // Wird nach der Response aufgerufen
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`Request dauerte ${duration}ms`);
+  });
+
+  next();
+};
+
+app.use(timingMiddleware);
+
 // Startseite mit EJS Template
-app.get('/', (req, res) => {
+app.get('/', testMiddleware, (req, res) => {
+  console.log(req.message);
   res.render('index', {
     title: 'Startseite',
     message: 'Willkommen!',
