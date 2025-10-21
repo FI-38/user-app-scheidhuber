@@ -13,8 +13,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(session({
-  resave: false,
-  saveUninitialized: false
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
 }));
 
 app.use(flash());
@@ -66,7 +67,7 @@ app.get('/contact', (req, res) => {
 
 app.post('/contact', (req, res) => {
     // email senden
-    // flash.message ("sucess")
+    req.flash('error_msg', 'Senden noch nicht implementiert.');
     res.redirect('/contact');
 });
 
