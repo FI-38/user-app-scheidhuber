@@ -4,10 +4,27 @@ import { fileURLToPath } from 'url';
 
 import pool from './config/database.js';
 
+import session from 'express-session';
+import flash from 'connect-flash';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+app.use(session({
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(flash());
+
+// Flash Messages für Templates verfügbar machen
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  next();
+});
 
 // EJS als View-Engine
 app.set('view engine', 'pug');
@@ -44,6 +61,13 @@ app.get('/contact', (req, res) => {
         title: 'Kontakt',
         user: { name: 'Max' }
     });
+});
+
+
+app.post('/contact', (req, res) => {
+    // email senden
+    // flash.message ("sucess")
+    res.redirect('/contact');
 });
 
 // Server starten

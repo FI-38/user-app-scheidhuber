@@ -8,6 +8,12 @@ html
   body
     include ../partials/header
 
+    if success_msg.length > 0
+      .alert.alert-success= success_msg
+
+    if error_msg.length > 0
+      .alert.alert-danger= error_msg
+
     if user
         p Hallo #{user.name}
     else
