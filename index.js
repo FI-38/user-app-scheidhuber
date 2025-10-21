@@ -64,12 +64,36 @@ app.get('/contact', (req, res) => {
     });
 });
 
-
 app.post('/contact', (req, res) => {
     // email senden
     req.flash('error_msg', 'Senden noch nicht implementiert.');
     res.redirect('/contact');
 });
+
+
+// Alle Benutzer laden
+async function getAllUsers() {
+  const connection = await pool.getConnection();
+  const rows = await connection.query('SELECT id, username, name, email, created_at FROM user');
+  connection.release();
+  return rows;
+}
+
+// Route für Benutzerliste
+app.get('/users', async (req, res) => {
+  try {
+    const users = await getAllUsers();
+    res.render('users', {
+      users: users,
+      title: 'Benutzerliste'
+    });
+  } catch (error) {
+    console.error('Fehler beim Laden der Benutzer:', error);
+    req.flash('error_msg', 'Fehler beim Laden der Benutzer');
+    res.redirect('/');
+  }
+});
+
 
 // Server starten
 app.listen(3000, () => {
