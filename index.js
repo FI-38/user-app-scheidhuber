@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import pool from './config/database.js';
-
+import bcrypt from 'bcryptjs';
 import session from 'express-session';
 import flash from 'connect-flash';
 import cookieParser from 'cookie-parser';
@@ -121,6 +121,55 @@ app.get('/users', async (req, res) => {
     console.error('Fehler beim Laden der Benutzer:', error);
     req.flash('error_msg', 'Fehler beim Laden der Benutzer');
     res.redirect('/');
+  }
+});
+
+app.get('/register', (req, res) => {
+  res.render('register', { title: 'Registrierung' });
+});
+
+app.post('/register', async (req, res) => {
+  const { username, name, email, password } = req.body;
+
+  // Validierung
+  if (password.length < 8) {
+    req.flash('error_msg', 'Passwort muss mindestens 8 Zeichen lang sein');
+    return res.redirect('/register');
+  }
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // Prüfen ob Benutzer existiert
+    const existing = await conn.query(
+      'SELECT id FROM user WHERE username = ? OR email = ?',
+      [username, email]
+    );
+
+    if (existing.length > 0) {
+      req.flash('error_msg', 'Benutzername oder E-Mail bereits vergeben');
+      return res.redirect('/register');
+    }
+
+    // Passwort hashen
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Benutzer speichern
+    await conn.query(
+      'INSERT INTO user (username, name, email, password_hash) VALUES (?, ?, ?, ?)',
+      [username, name, email, hashedPassword]
+    );
+
+    req.flash('success_msg', 'Registrierung erfolgreich! Bitte einloggen.');
+    res.redirect('/');
+
+  } catch (error) {
+    console.error('Registrierungsfehler:', error);
+    req.flash('error_msg', 'Ein Fehler ist aufgetreten');
+    res.redirect('/register');
+  } finally {
+    if (conn) conn.release();
   }
 });
 
