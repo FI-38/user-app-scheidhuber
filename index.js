@@ -15,6 +15,17 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// EJS als View-Engine
+app.set('view engine', 'pug');
+app.set('views', './views');
+
+// Bootstrap CSS und JS bereitstellen
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
+
+// Statische Dateien aus 'public'-Verzeichnis
+app.use(express.static('public'));
+
 // Body-Parser für JSON und URL-encoded Daten
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,25 +39,13 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.use(flash());
-
 // Flash Messages für Templates verfügbar machen
+app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   next();
 });
-
-// EJS als View-Engine
-app.set('view engine', 'pug');
-app.set('views', './views');
-
-// Bootstrap CSS und JS bereitstellen
-app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
-app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
-
-// Statische Dateien aus 'public'-Verzeichnis
-app.use(express.static('public'));
 
 // Eigene globale Middleware
 app.use(timingMiddleware);
