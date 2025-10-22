@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import jwt from 'jsonwebtoken';
 import { fileURLToPath } from 'url';
 
 import pool from './config/database.js';
@@ -173,6 +174,66 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
+
+app.get('/login', (req, res) => {
+  res.render('login', { title: 'Login' });
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  let conn;
+  try {
+    conn = await pool.getConnection();
+
+    // Benutzer suchen
+    const users = await conn.query(
+      'SELECT * FROM user WHERE username = ?',
+      [username]
+    );
+
+    if (users.length === 0) {
+      req.flash('error_msg', 'Benutzername oder Passwort falsch');
+      return res.redirect('/login');
+    }
+
+    const user = users[0];
+    // Passwort prüfen
+    const isMatch = await bcrypt.compare(password, user.password_hash);
+
+    if (!isMatch) {
+      req.flash('error_msg', 'Benutzername oder Passwort falsch');
+      return res.redirect('/login');
+    }
+
+    // JWT erstellen
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+    // Token als Cookie setzen
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000
+    });
+
+    req.flash('success_msg', 'Erfolgreich angemeldet!');
+    res.redirect('/');
+
+  } catch (error) {
+    console.error('Login-Fehler:', error);
+    req.flash('error_msg', 'Ein Fehler ist aufgetreten');
+    res.redirect('/login');
+  } finally {
+    if (conn) conn.release();
+  }
+});
 
 // Server starten
 app.listen(3000, () => {
