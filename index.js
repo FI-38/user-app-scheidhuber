@@ -9,6 +9,8 @@ import session from 'express-session';
 import flash from 'connect-flash';
 import cookieParser from 'cookie-parser';
 
+import userRouter from './routes/user.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -47,7 +49,6 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/
 // Statische Dateien aus 'public'-Verzeichnis
 app.use(express.static('public'));
 
-
 function testMiddleware(req, res, next) {
     console.log(`${req.method} ${req.url}`);
     req.data = {my: 'data'};
@@ -67,6 +68,11 @@ const timingMiddleware = (req, res, next) => {
 };
 
 app.use(timingMiddleware);
+
+
+// Routen der App einbinden
+app.use('/', userRouter);
+
 
 // Startseite mit EJS Template
 app.get('/', testMiddleware, (req, res) => {
@@ -102,28 +108,6 @@ app.post('/contact', (req, res) => {
 });
 
 
-// Alle Benutzer laden
-async function getAllUsers() {
-  const connection = await pool.getConnection();
-  const rows = await connection.query('SELECT id, username, name, email, created_at FROM user');
-  connection.release();
-  return rows;
-}
-
-// Route für Benutzerliste
-app.get('/users', async (req, res) => {
-  try {
-    const users = await getAllUsers();
-    res.render('users', {
-      users: users,
-      title: 'Benutzerliste'
-    });
-  } catch (error) {
-    console.error('Fehler beim Laden der Benutzer:', error);
-    req.flash('error_msg', 'Fehler beim Laden der Benutzer');
-    res.redirect('/');
-  }
-});
 
 app.get('/register', (req, res) => {
   res.render('register', { title: 'Registrierung' });
