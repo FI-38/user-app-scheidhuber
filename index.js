@@ -55,6 +55,12 @@ app.use('/', userRouter);
 app.use('/', pagesRouter);
 app.use('/', authRouter);
 
+// 404-Handler (am Ende aller Routen)
+app.use((req, res) => {
+  res.status(404).render('404', {
+    title: 'Seite nicht gefunden'
+  });
+});
 
 // Server starten
 app.listen(3000, () => {
