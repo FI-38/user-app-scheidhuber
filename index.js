@@ -10,6 +10,7 @@ import flash from 'connect-flash';
 import cookieParser from 'cookie-parser';
 
 import userRouter from './routes/user.js';
+import pagesRouter from './routes/pages.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -72,42 +73,7 @@ app.use(timingMiddleware);
 
 // Routen der App einbinden
 app.use('/', userRouter);
-
-
-// Startseite mit EJS Template
-app.get('/', testMiddleware, (req, res) => {
-  console.log(req.message);
-  res.render('index', {
-    title: 'Startseite',
-    message: 'Willkommen!',
-    user: { name: 'Max' }
-  });
-});
-
-// Weitere Route
-app.get('/about', (req, res) => {
-    res.render('about', {
-        title: 'Über uns',
-        content: 'Dies ist die About-Seite.',
-        user: { name: 'Max' }
-    });
-});
-
-// contact route
-app.get('/contact', (req, res) => {
-    res.render('contact', {
-        title: 'Kontakt',
-        user: { name: 'Max' }
-    });
-});
-
-app.post('/contact', (req, res) => {
-    // email senden
-    req.flash('error_msg', 'Senden noch nicht implementiert.');
-    res.redirect('/contact');
-});
-
-
+app.use('/', pagesRouter);
 
 app.get('/register', (req, res) => {
   res.render('register', { title: 'Registrierung' });
