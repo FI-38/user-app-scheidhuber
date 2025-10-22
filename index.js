@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import userRouter from './routes/user.js';
 import pagesRouter from './routes/pages.js';
 import authRouter from './routes/auth.js';
+import { timingMiddleware } from './middleware/test.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,32 +48,13 @@ app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/
 // Statische Dateien aus 'public'-Verzeichnis
 app.use(express.static('public'));
 
-function testMiddleware(req, res, next) {
-    console.log(`${req.method} ${req.url}`);
-    req.data = {my: 'data'};
-    next();
-}
-
-const timingMiddleware = (req, res, next) => {
-  const start = Date.now();
-
-  // Wird nach der Response aufgerufen
-  res.on('finish', () => {
-    const duration = Date.now() - start;
-    console.log(`Request dauerte ${duration}ms`);
-  });
-
-  next();
-};
-
+// Eigene globale Middleware
 app.use(timingMiddleware);
-
 
 // Routen der App einbinden
 app.use('/', userRouter);
 app.use('/', pagesRouter);
 app.use('/', authRouter);
-
 
 
 // Server starten
