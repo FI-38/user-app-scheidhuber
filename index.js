@@ -9,6 +9,7 @@ import userRouter from './routes/user.js';
 import pagesRouter from './routes/pages.js';
 import authRouter from './routes/auth.js';
 import { timingMiddleware } from './middleware/test.js';
+import { optAuthMiddleware } from './middleware/auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,6 +50,8 @@ app.use((req, res, next) => {
 
 // Eigene globale Middleware
 app.use(timingMiddleware);
+app.use(optAuthMiddleware);
+
 
 // Routen der App einbinden
 app.use('/', userRouter);

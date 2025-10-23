@@ -14,3 +14,13 @@ header
             a.nav-link(href="/contact") Contact
           li.nav-item
             a.nav-link(href="/users") Benutzerliste
+          if typeof user !== 'undefined' && user
+            li.nav-item
+              div.navbar-text.me-3 Hallo, #{user.username}!
+            li.nav-item
+              a.nav-link(href="/dashboard") Dashboard
+          else
+            li.nav-item
+              a.nav-link(href="/login") Login
+            li.nav-item
+              a.nav-link(href="/register") Registrieren
