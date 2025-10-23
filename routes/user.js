@@ -1,15 +1,8 @@
 import express from 'express';
-import pool from '../config/database.js';
+import { getAllUsers } from '../controller/user.js';
+import { authMiddleware } from '../middleware/auth.js';
 
 const router = express.Router();
-
-// Alle Benutzer laden
-async function getAllUsers() {
-  const connection = await pool.getConnection();
-  const rows = await connection.query('SELECT id, username, name, email, created_at FROM user');
-  connection.release();
-  return rows;
-}
 
 // Route für Benutzerliste
 router.get('/users', async (req, res) => {
@@ -24,6 +17,13 @@ router.get('/users', async (req, res) => {
     req.flash('error_msg', 'Fehler beim Laden der Benutzer');
     res.redirect('/');
   }
+});
+
+// Route for Dashboard
+router.get('/dashboard', authMiddleware, async (req, res) => {
+  res.render('dashboard', {
+    title: 'Dashboard'
+  });
 });
 
 export default router;
